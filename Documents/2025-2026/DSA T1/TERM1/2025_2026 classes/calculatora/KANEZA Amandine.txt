@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.5)
+
+project(Calculator VERSION 0.1 LANGUAGES CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
+
+set(SOURCES
+    KANEZA Amandine2.cpp
+    KANEZA Amandine1.cpp
+)
+
+set(HEADERS
+    KANEZA Amandine1.h
+)
+
+add_executable(Calculator
+    ${SOURCES}
+    ${HEADERS}
+)
+
+target_link_libraries(Calculator PRIVATE Qt6::Widgets)

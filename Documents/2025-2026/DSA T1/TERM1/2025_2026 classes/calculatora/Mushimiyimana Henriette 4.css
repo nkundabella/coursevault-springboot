@@ -1,0 +1,64 @@
+
+entry {
+    background: black;         
+    color: white;               
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 18px;
+    border: 2px solid #333;
+    margin: 5px;
+}
+
+/* === Number buttons (0–9 and .) === */
+button.button-number {
+    background: black;       /* Dodger Blue */
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 8px;
+    padding: 23px;
+     margin: 5px;
+}
+
+/* === Operator buttons (+, -, *, /) === */
+button.button-operator {
+    background: #707070;       /* Dark Orange */
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 8px;
+    padding: 23px;
+    margin: 5px;
+}
+
+/* === Clear button (C) === */
+button.button-clear {
+    background: #686868;       /* Red */
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 8px;
+    padding: 23px;
+     margin: 5px;
+}
+
+/* === Equal button (=) === */
+button.button-equal {
+    background: black;       /* Lime Green */
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 8px;
+    padding: 23px;
+     margin: 5px;
+}
+
+/* === Hover effect for all buttons === */
+button.button-number:hover,
+button.button-operator:hover,
+button.button-clear:hover,
+button.button-equal:hover {
+    opacity: 0.85;
+    transition: 0.2s;
+}
