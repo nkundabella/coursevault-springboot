@@ -47,13 +47,12 @@ public class SubjectController {
             @Valid @RequestPart("metadata") CreateSubjectRequest request) {
         
         try {
-            // Simple mock security: find user from header or use a default one for MVP
+
             User uploader = null;
             if (userId != null) {
                 uploader = userRepository.findById(userId).orElse(null);
             }
             
-            // If no user found, we can't upload (logic from legacy)
             if (uploader == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User-Id header missing or invalid user");
             }

@@ -82,7 +82,6 @@ public class SubjectService {
         }
         Files.copy(file.getInputStream(), uploadPath.resolve(savedFileName));
 
-        // Get or create subject
         Subject subject = subjectRepository.findByNameIgnoreCase(request.getName())
                 .orElseGet(() -> {
                     Subject s = new Subject();
@@ -92,7 +91,6 @@ public class SubjectService {
                     return subjectRepository.save(s);
                 });
 
-        // Create resource
         Resource resource = new Resource();
         resource.setTitle(request.getResourceTitle());
         resource.setFilePath(savedFileName);
