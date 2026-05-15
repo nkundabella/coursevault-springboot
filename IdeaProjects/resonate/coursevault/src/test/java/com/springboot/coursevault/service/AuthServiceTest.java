@@ -37,6 +37,9 @@ public class AuthServiceTest {
     @Mock
     private CaptchaService captchaService;
 
+    @Mock
+    private com.springboot.coursevault.util.JwtUtil jwtUtil;
+
     @InjectMocks
     private AuthService authService;
 
@@ -63,6 +66,7 @@ public class AuthServiceTest {
         // Assuming no captcha token provided for this test
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
+        when(jwtUtil.generateToken(anyString(), anyString())).thenReturn("mocked-jwt-token");
 
         UserDTO result = authService.login(request, "127.0.0.1");
 
@@ -137,6 +141,7 @@ public class AuthServiceTest {
             u.setId(2L);
             return u;
         });
+        when(jwtUtil.generateToken(anyString(), anyString())).thenReturn("mocked-jwt-token");
 
         UserDTO result = authService.verifySignup(email, code, request);
 

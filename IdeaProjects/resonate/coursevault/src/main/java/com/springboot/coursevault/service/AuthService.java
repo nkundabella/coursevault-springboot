@@ -7,6 +7,7 @@ import com.springboot.coursevault.model.User;
 import com.springboot.coursevault.model.VerificationCode;
 import com.springboot.coursevault.repository.UserRepository;
 import com.springboot.coursevault.repository.VerificationCodeRepository;
+import com.springboot.coursevault.util.JwtUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +19,15 @@ public class AuthService {
     private final VerificationCodeRepository codeRepository;
     private final MailService mailService;
     private final CaptchaService captchaService;
+    private final JwtUtil jwtUtil;
 
     public AuthService(UserRepository userRepository, VerificationCodeRepository codeRepository,
-                       MailService mailService, CaptchaService captchaService) {
+                       MailService mailService, CaptchaService captchaService, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.codeRepository = codeRepository;
         this.mailService = mailService;
         this.captchaService = captchaService;
+        this.jwtUtil = jwtUtil;
     }
 
     public UserDTO login(LoginRequest request, String clientIp) {
@@ -42,7 +45,11 @@ public class AuthService {
             throw new RuntimeException("Incorrect password.");
         }
 
-        return new UserDTO(user);
+        UserDTO userDTO = new UserDTO(user);
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+        userDTO.setToken(token);
+
+        return userDTO;
     }
 
     @Transactional
@@ -91,7 +98,12 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
         codeRepository.delete(vc);
-        return new UserDTO(savedUser);
+        
+        UserDTO userDTO = new UserDTO(savedUser);
+        String token = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getRole());
+        userDTO.setToken(token);
+        
+        return userDTO;
     }
 
     @Transactional
