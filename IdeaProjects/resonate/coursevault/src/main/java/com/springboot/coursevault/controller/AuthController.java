@@ -3,7 +3,9 @@ package com.springboot.coursevault.controller;
 import com.springboot.coursevault.dto.LoginRequest;
 import com.springboot.coursevault.dto.SignupRequest;
 import com.springboot.coursevault.dto.UserDTO;
+import com.springboot.coursevault.dto.VerifyCodeRequest;
 import com.springboot.coursevault.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +32,13 @@ public class AuthController {
     }
 
     @PostMapping("/signup/verify")
-    public ResponseEntity<?> verifySignup(@Valid @RequestBody VerifyCodeRequest verifyRequest, @RequestBody SignupRequest originalRequest) {
+    public ResponseEntity<?> verifySignup(@Valid @RequestBody VerifyCodeRequest verifyRequest) {
         try {
-            UserDTO result = authService.verifySignup(verifyRequest.getEmail(), verifyRequest.getCode(), originalRequest);
+            UserDTO result = authService.verifySignup(
+                verifyRequest.getEmail(), 
+                verifyRequest.getCode(), 
+                verifyRequest.getSignupData()
+            );
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -40,9 +46,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         try {
-            UserDTO result = authService.login(request);
+            UserDTO result = authService.login(request, httpRequest.getRemoteAddr());
             return ResponseEntity.ok(result);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());

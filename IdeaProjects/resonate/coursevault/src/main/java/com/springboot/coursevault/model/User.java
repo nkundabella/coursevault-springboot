@@ -1,6 +1,7 @@
 package com.springboot.coursevault.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 
 @Entity
 @Table(name = "users")
@@ -13,6 +14,7 @@ public class User {
     @Column(nullable = false)
     private String fullName;
 
+    @Email
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -20,7 +22,7 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private String role; // ADMIN, TEACHER, STUDENT
+    private String role;
 
     @Column
     private String securityQuestion;

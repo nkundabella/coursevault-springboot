@@ -4,9 +4,12 @@ import com.springboot.coursevault.dto.LoginRequest;
 import com.springboot.coursevault.dto.SignupRequest;
 import com.springboot.coursevault.dto.UserDTO;
 import com.springboot.coursevault.model.User;
+import com.springboot.coursevault.model.VerificationCode;
 import com.springboot.coursevault.repository.UserRepository;
+import com.springboot.coursevault.repository.VerificationCodeRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -14,19 +17,29 @@ public class AuthService {
     private final UserRepository userRepository;
     private final VerificationCodeRepository codeRepository;
     private final MailService mailService;
+    private final CaptchaService captchaService;
 
-    public AuthService(UserRepository userRepository, VerificationCodeRepository codeRepository, MailService mailService) {
+    public AuthService(UserRepository userRepository, VerificationCodeRepository codeRepository,
+                       MailService mailService, CaptchaService captchaService) {
         this.userRepository = userRepository;
         this.codeRepository = codeRepository;
         this.mailService = mailService;
+        this.captchaService = captchaService;
     }
 
-    public UserDTO login(LoginRequest request) {
+    public UserDTO login(LoginRequest request, String clientIp) {
+        String captchaToken = request.getCaptchaToken();
+        if (captchaToken != null && !captchaToken.isBlank()) {
+            if (!captchaService.verify(captchaToken, clientIp)) {
+                throw new RuntimeException("CAPTCHA verification failed. Please try again.");
+            }
+        }
+
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("No account found with that email."));
 
         if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new RuntimeException("Incorrect password.");
         }
 
         return new UserDTO(user);
@@ -47,11 +60,15 @@ public class AuthService {
 
     @Transactional
     public UserDTO verifySignup(String email, String code, SignupRequest originalRequest) {
+        if (!email.equals(originalRequest.getEmail())) {
+            throw new RuntimeException("Email mismatch: The verification email must match the signup email.");
+        }
+
         VerificationCode vc = codeRepository.findByEmailAndCodeAndType(email, code, "SIGNUP")
-                .orElseThrow(() -> new RuntimeException("Invalid or expired code"));
+                .orElseThrow(() -> new RuntimeException("Invalid verification code or code expired."));
 
         if (vc.isExpired()) {
-            throw new RuntimeException("Code has expired");
+            throw new RuntimeException("Verification code has expired. Please request a new one.");
         }
 
         User user = new User();

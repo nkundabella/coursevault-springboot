@@ -13,7 +13,7 @@ public class VerificationCode {
 
     private String email;
     private String code;
-    private String type; // SIGNUP, LOGIN, RESET
+    private String type;
     private LocalDateTime expiryDate;
 
     public VerificationCode() {}

@@ -21,9 +21,9 @@ public class ConfigController {
     @PostMapping("/smtp")
     public ResponseEntity<?> updateSmtp(@RequestBody SystemConfig config) {
         SystemConfig existing = configRepository.findAll().stream().findFirst().orElse(new SystemConfig());
-        existing.setSmtpHost(config.getSmtpHost());
-        existing.setSmtpPort(config.getSmtpPort());
-        existing.setSmtpUser(config.getSmtpUser());
+        existing.setSmtpHost(config.getSmtpHost() != null ? config.getSmtpHost().trim() : null);
+        existing.setSmtpPort(config.getSmtpPort() != null ? config.getSmtpPort().trim() : null);
+        existing.setSmtpUser(config.getSmtpUser() != null ? config.getSmtpUser().trim() : null);
         existing.setSmtpPass(config.getSmtpPass());
         
         configRepository.save(existing);

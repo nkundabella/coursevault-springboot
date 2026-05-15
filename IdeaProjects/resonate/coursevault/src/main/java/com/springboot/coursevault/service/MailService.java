@@ -23,15 +23,16 @@ public class MailService {
         SystemConfig config = configRepository.findAll().stream().findFirst().orElse(null);
         if (config != null && config.getSmtpHost() != null) {
             mailSender = new JavaMailSenderImpl();
-            mailSender.setHost(config.getSmtpHost());
-            mailSender.setPort(Integer.parseInt(config.getSmtpPort()));
-            mailSender.setUsername(config.getSmtpUser());
+            mailSender.setHost(config.getSmtpHost().trim());
+            mailSender.setPort(Integer.parseInt(config.getSmtpPort().trim()));
+            mailSender.setUsername(config.getSmtpUser().trim());
             mailSender.setPassword(config.getSmtpPass());
 
             Properties props = mailSender.getJavaMailProperties();
             props.put("mail.transport.protocol", "smtp");
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.ssl.trust", config.getSmtpHost().trim());
             props.put("mail.debug", "true");
         }
     }
