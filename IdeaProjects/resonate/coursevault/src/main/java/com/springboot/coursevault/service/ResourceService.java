@@ -30,12 +30,14 @@ public class ResourceService {
         this.bookmarkRepository = bookmarkRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<ResourceDTO> getAllResources() {
         return resourceRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ResourceDTO> getResourcesBySubject(Long subjectId) {
         return resourceRepository.findBySubjectId(subjectId).stream()
                 .map(this::convertToDTO)
@@ -54,6 +56,9 @@ public class ResourceService {
             // Log error
         }
 
+        // Delete all associated bookmarks first
+        bookmarkRepository.deleteByResource(resource);
+
         resourceRepository.delete(resource);
     }
 
@@ -69,6 +74,7 @@ public class ResourceService {
                 );
     }
 
+    @Transactional(readOnly = true)
     public List<ResourceDTO> getBookmarksByUser(User user) {
         return bookmarkRepository.findByUser(user).stream()
                 .map(bookmark -> convertToDTO(bookmark.getResource()))

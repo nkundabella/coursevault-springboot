@@ -8,6 +8,7 @@ import com.springboot.coursevault.service.SubjectService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,19 +43,15 @@ public class SubjectController {
 
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<?> addSubject(
-            @RequestHeader(value = "User-Id", required = false) Long userId,
             @RequestPart("file") MultipartFile file,
             @Valid @RequestPart("metadata") CreateSubjectRequest request) {
         
         try {
-
-            User uploader = null;
-            if (userId != null) {
-                uploader = userRepository.findById(userId).orElse(null);
-            }
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            User uploader = userRepository.findByEmail(email).orElse(null);
             
             if (uploader == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User-Id header missing or invalid user");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
             }
 
             SubjectDTO result = subjectService.addSubject(request, file, uploader);

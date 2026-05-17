@@ -6,6 +6,7 @@ import com.springboot.coursevault.repository.UserRepository;
 import com.springboot.coursevault.service.ResourceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,11 +44,9 @@ public class ResourceController {
     }
 
     @PostMapping("/{id}/bookmark")
-    public ResponseEntity<?> toggleBookmark(
-            @RequestHeader("User-Id") Long userId,
-            @PathVariable Long id) {
-        
-        User user = userRepository.findById(userId).orElse(null);
+    public ResponseEntity<?> toggleBookmark(@PathVariable Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         }
@@ -61,8 +60,9 @@ public class ResourceController {
     }
 
     @GetMapping("/bookmarks")
-    public ResponseEntity<?> getMyBookmarks(@RequestHeader("User-Id") Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public ResponseEntity<?> getMyBookmarks() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         }

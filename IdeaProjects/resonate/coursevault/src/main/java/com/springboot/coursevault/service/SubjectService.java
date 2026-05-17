@@ -6,6 +6,7 @@ import com.springboot.coursevault.dto.CreateSubjectRequest;
 import com.springboot.coursevault.model.Resource;
 import com.springboot.coursevault.model.Subject;
 import com.springboot.coursevault.model.User;
+import com.springboot.coursevault.repository.BookmarkRepository;
 import com.springboot.coursevault.repository.ResourceRepository;
 import com.springboot.coursevault.repository.SubjectRepository;
 import com.springboot.coursevault.util.FileValidator;
@@ -30,21 +31,25 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final ResourceRepository resourceRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    public SubjectService(SubjectRepository subjectRepository, ResourceRepository resourceRepository) {
+    public SubjectService(SubjectRepository subjectRepository, ResourceRepository resourceRepository, BookmarkRepository bookmarkRepository) {
         this.subjectRepository = subjectRepository;
         this.resourceRepository = resourceRepository;
+        this.bookmarkRepository = bookmarkRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<SubjectDTO> getAllSubjects() {
         return subjectRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public SubjectDTO getSubjectById(Long id) {
         Subject subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subject not found"));
@@ -118,6 +123,8 @@ public class SubjectService {
             } catch (IOException e) {
                 // Log error but continue
             }
+            // Delete associated bookmarks first to prevent constraint violations
+            bookmarkRepository.deleteByResource(res);
         }
         subjectRepository.delete(subject);
     }
