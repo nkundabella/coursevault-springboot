@@ -3,7 +3,8 @@ package com.springboot.coursevault.dto;
 public class ResourceDTO {
     private Long id;
     private String title;
-    private String filePath;
+    private String fileName;
+    private String downloadUrl;
     private int year;
     private int term;
     private String type;
@@ -12,10 +13,12 @@ public class ResourceDTO {
 
     public ResourceDTO() {}
 
-    public ResourceDTO(Long id, String title, String filePath, int year, int term, String type, Long uploaderId, String uploaderName) {
+    public ResourceDTO(Long id, String title, String fileName, String downloadUrl,
+                       int year, int term, String type, Long uploaderId, String uploaderName) {
         this.id = id;
         this.title = title;
-        this.filePath = filePath;
+        this.fileName = fileName;
+        this.downloadUrl = downloadUrl;
         this.year = year;
         this.term = term;
         this.type = type;
@@ -29,8 +32,11 @@ public class ResourceDTO {
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
-    public String getFilePath() { return filePath; }
-    public void setFilePath(String filePath) { this.filePath = filePath; }
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
+
+    public String getDownloadUrl() { return downloadUrl; }
+    public void setDownloadUrl(String downloadUrl) { this.downloadUrl = downloadUrl; }
 
     public int getYear() { return year; }
     public void setYear(int year) { this.year = year; }

@@ -4,10 +4,12 @@ import com.springboot.coursevault.model.SystemConfig;
 import com.springboot.coursevault.repository.SystemConfigRepository;
 import com.springboot.coursevault.service.MailService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/config")
+@PreAuthorize("hasRole('ADMIN')")
 public class ConfigController {
 
     private final SystemConfigRepository configRepository;

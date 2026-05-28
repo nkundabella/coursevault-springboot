@@ -1,9 +1,11 @@
 package com.springboot.coursevault.controller;
 
 import com.springboot.coursevault.dto.UserDTO;
+import com.springboot.coursevault.exception.BadRequestException;
 import com.springboot.coursevault.model.User;
 import com.springboot.coursevault.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final UserRepository userRepository;
@@ -28,13 +31,26 @@ public class AdminController {
     }
 
     @PostMapping("/approve-teacher/{userId}")
-    public ResponseEntity<?> approveTeacher(@PathVariable Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null && "PENDING_TEACHER".equals(user.getRole())) {
-            user.setRole("TEACHER");
-            userRepository.save(user);
-            return ResponseEntity.ok("Teacher approved");
+    public ResponseEntity<String> approveTeacher(@PathVariable Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+        if (!"PENDING_TEACHER".equals(user.getRole())) {
+            throw new BadRequestException("User is not a pending teacher");
         }
-        return ResponseEntity.badRequest().body("User not found or not a pending teacher");
+        user.setRole("TEACHER");
+        userRepository.save(user);
+        return ResponseEntity.ok("Teacher approved");
+    }
+
+    @PostMapping("/decline-teacher/{userId}")
+    public ResponseEntity<String> declineTeacher(@PathVariable Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+        if (!"PENDING_TEACHER".equals(user.getRole())) {
+            throw new BadRequestException("User is not a pending teacher");
+        }
+        user.setRole("STUDENT");
+        userRepository.save(user);
+        return ResponseEntity.ok("Teacher application declined; user is now a student");
     }
 }

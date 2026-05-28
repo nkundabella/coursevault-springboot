@@ -1,18 +1,23 @@
 package com.springboot.coursevault.service;
 
 import com.springboot.coursevault.dto.ResourceDTO;
+import com.springboot.coursevault.exception.ResourceNotFoundException;
 import com.springboot.coursevault.model.Bookmark;
 import com.springboot.coursevault.model.Resource;
 import com.springboot.coursevault.model.User;
 import com.springboot.coursevault.repository.BookmarkRepository;
 import com.springboot.coursevault.repository.ResourceRepository;
-import org.springframework.beans.factory.annotation.Value;
+import com.springboot.coursevault.security.AuthorizationService;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,51 +26,55 @@ public class ResourceService {
 
     private final ResourceRepository resourceRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final FileStorageService fileStorageService;
+    private final ResourceDtoMapper resourceDtoMapper;
+    private final AuthorizationService authorizationService;
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
-
-    public ResourceService(ResourceRepository resourceRepository, BookmarkRepository bookmarkRepository) {
+    public ResourceService(ResourceRepository resourceRepository,
+                           BookmarkRepository bookmarkRepository,
+                           FileStorageService fileStorageService,
+                           ResourceDtoMapper resourceDtoMapper,
+                           AuthorizationService authorizationService) {
         this.resourceRepository = resourceRepository;
         this.bookmarkRepository = bookmarkRepository;
+        this.fileStorageService = fileStorageService;
+        this.resourceDtoMapper = resourceDtoMapper;
+        this.authorizationService = authorizationService;
+    }
+
+    @Transactional(readOnly = true)
+    public com.springboot.coursevault.model.Resource getResourceEntity(Long id) {
+        return resourceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
     }
 
     @Transactional(readOnly = true)
     public List<ResourceDTO> getAllResources() {
         return resourceRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(resourceDtoMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<ResourceDTO> getResourcesBySubject(Long subjectId) {
         return resourceRepository.findBySubjectId(subjectId).stream()
-                .map(this::convertToDTO)
+                .map(resourceDtoMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void deleteResource(Long id) {
-        Resource resource = resourceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resource not found"));
+    public void deleteResource(Long id, User actor) {
+        com.springboot.coursevault.model.Resource resource = getResourceEntity(id);
+        authorizationService.assertCanDeleteResource(actor, resource);
 
-        // Delete from filesystem
-        try {
-            Files.deleteIfExists(Paths.get(uploadDir).resolve(resource.getFilePath()));
-        } catch (IOException e) {
-            // Log error
-        }
-
-        // Delete all associated bookmarks first
+        fileStorageService.deleteIfExists(resource.getFilePath());
         bookmarkRepository.deleteByResource(resource);
-
         resourceRepository.delete(resource);
     }
 
     @Transactional
     public void toggleBookmark(User user, Long resourceId) {
-        Resource resource = resourceRepository.findById(resourceId)
-                .orElseThrow(() -> new RuntimeException("Resource not found"));
+        com.springboot.coursevault.model.Resource resource = getResourceEntity(resourceId);
 
         bookmarkRepository.findByUserAndResource(user, resource)
                 .ifPresentOrElse(
@@ -77,22 +86,40 @@ public class ResourceService {
     @Transactional(readOnly = true)
     public List<ResourceDTO> getBookmarksByUser(User user) {
         return bookmarkRepository.findByUser(user).stream()
-                .map(bookmark -> convertToDTO(bookmark.getResource()))
+                .map(bookmark -> resourceDtoMapper.toDto(bookmark.getResource()))
                 .collect(Collectors.toList());
     }
 
-    private ResourceDTO convertToDTO(Resource resource) {
-        Long uploaderId = (resource.getUploader() != null) ? resource.getUploader().getId() : null;
-        String uploaderName = (resource.getUploader() != null) ? resource.getUploader().getFullName() : "Unknown";
-        return new ResourceDTO(
-                resource.getId(),
-                resource.getTitle(),
-                resource.getFilePath(),
-                resource.getYear(),
-                resource.getTerm(),
-                resource.getType(),
-                uploaderId,
-                uploaderName
-        );
+    @Transactional(readOnly = true)
+    public ResponseEntity<Resource> buildDownloadResponse(Long id, String mode) {
+        com.springboot.coursevault.model.Resource entity = getResourceEntity(id);
+        Path filePath = fileStorageService.resolveStoredFile(entity.getFilePath());
+
+        if (!Files.exists(filePath) || !Files.isRegularFile(filePath)) {
+            throw new ResourceNotFoundException("File not found on disk");
+        }
+
+        String displayName = FileStorageService.displayFileName(entity.getFilePath());
+        String mimeType = FileStorageService.detectMimeType(displayName, filePath);
+        FileSystemResource fileResource = new FileSystemResource(filePath);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(mimeType));
+        headers.set("X-Content-Type-Options", "nosniff");
+        headers.set("Cache-Control", "private, max-age=3600");
+        headers.set("X-Frame-Options", "SAMEORIGIN");
+        headers.set("Referrer-Policy", "no-referrer");
+
+        if ("view".equalsIgnoreCase(mode)) {
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + displayName + "\"");
+        } else {
+            headers.set(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + displayName + "\"");
+        }
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(filePath.toFile().length())
+                .body(fileResource);
     }
 }

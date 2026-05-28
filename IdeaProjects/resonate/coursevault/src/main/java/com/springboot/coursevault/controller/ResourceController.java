@@ -2,11 +2,10 @@ package com.springboot.coursevault.controller;
 
 import com.springboot.coursevault.dto.ResourceDTO;
 import com.springboot.coursevault.model.User;
-import com.springboot.coursevault.repository.UserRepository;
+import com.springboot.coursevault.service.CurrentUserService;
 import com.springboot.coursevault.service.ResourceService;
-import org.springframework.http.HttpStatus;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +15,11 @@ import java.util.List;
 public class ResourceController {
 
     private final ResourceService resourceService;
-    private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
 
-    public ResourceController(ResourceService resourceService, UserRepository userRepository) {
+    public ResourceController(ResourceService resourceService, CurrentUserService currentUserService) {
         this.resourceService = resourceService;
-        this.userRepository = userRepository;
+        this.currentUserService = currentUserService;
     }
 
     @GetMapping
@@ -33,39 +32,30 @@ public class ResourceController {
         return ResponseEntity.ok(resourceService.getResourcesBySubject(subjectId));
     }
 
+    @GetMapping("/{id}/download")
+    public ResponseEntity<Resource> download(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "attachment") String mode) {
+        return resourceService.buildDownloadResponse(id, mode);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteResource(@PathVariable Long id) {
-        try {
-            resourceService.deleteResource(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
+        User user = currentUserService.requireCurrentUser();
+        resourceService.deleteResource(id, user);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/bookmark")
-    public ResponseEntity<?> toggleBookmark(@PathVariable Long id) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
-        }
-
-        try {
-            resourceService.toggleBookmark(user, id);
-            return ResponseEntity.ok("Bookmark status toggled");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> toggleBookmark(@PathVariable Long id) {
+        User user = currentUserService.requireCurrentUser();
+        resourceService.toggleBookmark(user, id);
+        return ResponseEntity.ok("Bookmark status toggled");
     }
 
     @GetMapping("/bookmarks")
-    public ResponseEntity<?> getMyBookmarks() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
-        }
+    public ResponseEntity<List<ResourceDTO>> getMyBookmarks() {
+        User user = currentUserService.requireCurrentUser();
         return ResponseEntity.ok(resourceService.getBookmarksByUser(user));
     }
 }
