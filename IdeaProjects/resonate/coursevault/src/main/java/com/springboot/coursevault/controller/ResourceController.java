@@ -1,10 +1,11 @@
 package com.springboot.coursevault.controller;
 
+import com.springboot.coursevault.dto.CreateSubjectRequest;
 import com.springboot.coursevault.dto.ResourceDTO;
 import com.springboot.coursevault.model.User;
+import jakarta.validation.Valid;
 import com.springboot.coursevault.service.CurrentUserService;
 import com.springboot.coursevault.service.ResourceService;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,22 @@ public class ResourceController {
         return ResponseEntity.ok(resourceService.getResourcesBySubject(subjectId));
     }
 
+    @GetMapping("/recent")
+    public ResponseEntity<List<ResourceDTO>> getRecentResources(
+            @RequestParam(defaultValue = "10") int limit) {
+        return ResponseEntity.ok(resourceService.getRecentResources(limit));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResourceDTO> updateResource(
+            @PathVariable Long id,
+            @Valid @RequestBody CreateSubjectRequest request) {
+        User user = currentUserService.requireCurrentUser();
+        return ResponseEntity.ok(resourceService.updateResource(id, request, user));
+    }
+
     @GetMapping("/{id}/download")
-    public ResponseEntity<Resource> download(
+    public ResponseEntity<org.springframework.core.io.Resource> download(
             @PathVariable Long id,
             @RequestParam(defaultValue = "attachment") String mode) {
         return resourceService.buildDownloadResponse(id, mode);

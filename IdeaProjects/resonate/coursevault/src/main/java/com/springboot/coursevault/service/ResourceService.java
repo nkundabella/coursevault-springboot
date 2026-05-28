@@ -1,21 +1,21 @@
 package com.springboot.coursevault.service;
 
+import com.springboot.coursevault.dto.CreateSubjectRequest;
 import com.springboot.coursevault.dto.ResourceDTO;
-import com.springboot.coursevault.exception.ResourceNotFoundException;
+import com.springboot.coursevault.util.InputSanitizer;
+import com.springboot.coursevault.exception.GlobalExceptionHandler;
 import com.springboot.coursevault.model.Bookmark;
-import com.springboot.coursevault.model.Resource;
 import com.springboot.coursevault.model.User;
 import com.springboot.coursevault.repository.BookmarkRepository;
 import com.springboot.coursevault.repository.ResourceRepository;
 import com.springboot.coursevault.security.AuthorizationService;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -29,7 +29,6 @@ public class ResourceService {
     private final FileStorageService fileStorageService;
     private final ResourceDtoMapper resourceDtoMapper;
     private final AuthorizationService authorizationService;
-
     public ResourceService(ResourceRepository resourceRepository,
                            BookmarkRepository bookmarkRepository,
                            FileStorageService fileStorageService,
@@ -45,7 +44,7 @@ public class ResourceService {
     @Transactional(readOnly = true)
     public com.springboot.coursevault.model.Resource getResourceEntity(Long id) {
         return resourceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
+                .orElseThrow(() -> GlobalExceptionHandler.notFound("Resource not found"));
     }
 
     @Transactional(readOnly = true)
@@ -84,6 +83,45 @@ public class ResourceService {
     }
 
     @Transactional(readOnly = true)
+    public List<ResourceDTO> getRecentResources(int limit) {
+        int size = Math.min(Math.max(limit, 1), 50);
+        return resourceRepository.findByOrderByIdDesc(PageRequest.of(0, size)).stream()
+                .map(resourceDtoMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResourceDTO> getMaterialsForUser(User user) {
+        String role = user.getRole();
+        if ("ADMIN".equals(role)) {
+            return getAllResources();
+        }
+        if ("TEACHER".equals(role)) {
+            return resourceRepository.findByUploaderId(user.getId()).stream()
+                    .map(resourceDtoMapper::toDto)
+                    .collect(Collectors.toList());
+        }
+        return getBookmarksByUser(user);
+    }
+
+    @Transactional
+    public ResourceDTO updateResource(Long id, CreateSubjectRequest request, User actor) {
+        com.springboot.coursevault.model.Resource resource = getResourceEntity(id);
+        authorizationService.assertCanEditResource(actor, resource);
+
+        if (request.getResourceTitle() != null && !request.getResourceTitle().isBlank()) {
+            resource.setTitle(InputSanitizer.cleanText(request.getResourceTitle(), 200));
+        }
+        resource.setYear(InputSanitizer.parseIntInRange(String.valueOf(request.getYear()), 1, 3, resource.getYear()));
+        resource.setTerm(InputSanitizer.parseIntInRange(String.valueOf(request.getTerm()), 1, 3, resource.getTerm()));
+        if (request.getType() != null) {
+            authorizationService.validateResourceTypeForRole(actor, request.getType());
+            resource.setType(InputSanitizer.cleanResourceType(request.getType()));
+        }
+        return resourceDtoMapper.toDto(resourceRepository.save(resource));
+    }
+
+    @Transactional(readOnly = true)
     public List<ResourceDTO> getBookmarksByUser(User user) {
         return bookmarkRepository.findByUser(user).stream()
                 .map(bookmark -> resourceDtoMapper.toDto(bookmark.getResource()))
@@ -91,12 +129,12 @@ public class ResourceService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<Resource> buildDownloadResponse(Long id, String mode) {
+    public ResponseEntity<org.springframework.core.io.Resource> buildDownloadResponse(Long id, String mode) {
         com.springboot.coursevault.model.Resource entity = getResourceEntity(id);
         Path filePath = fileStorageService.resolveStoredFile(entity.getFilePath());
 
         if (!Files.exists(filePath) || !Files.isRegularFile(filePath)) {
-            throw new ResourceNotFoundException("File not found on disk");
+            throw GlobalExceptionHandler.notFound("File not found on disk");
         }
 
         String displayName = FileStorageService.displayFileName(entity.getFilePath());

@@ -6,6 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -15,6 +16,18 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    public static ResponseStatusException notFound(String message) {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, message);
+    }
+
+    public static ResponseStatusException badRequest(String message) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
+    }
+
+    public static ResponseStatusException forbidden(String message) {
+        return new ResponseStatusException(HttpStatus.FORBIDDEN, message);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
@@ -27,25 +40,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorBody(HttpStatus.BAD_REQUEST, "Validation Failed", errors));
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(ResourceNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(errorBody(HttpStatus.NOT_FOUND, ex.getMessage(), null));
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, Object>> handleResponseStatus(ResponseStatusException ex) {
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+        String message = ex.getReason() != null ? ex.getReason() : status.getReasonPhrase();
+        return ResponseEntity.status(status).body(errorBody(status, message, null));
     }
 
-    @ExceptionHandler({ForbiddenException.class, AccessDeniedException.class})
-    public ResponseEntity<Map<String, Object>> handleForbidden(Exception ex) {
-        String message = ex instanceof AccessDeniedException
-                ? "Access denied"
-                : ex.getMessage();
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleForbidden(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(errorBody(HttpStatus.FORBIDDEN, message, null));
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Map<String, Object>> handleBadRequest(BadRequestException ex) {
-        return ResponseEntity.badRequest()
-                .body(errorBody(HttpStatus.BAD_REQUEST, ex.getMessage(), null));
+                .body(errorBody(HttpStatus.FORBIDDEN, "Access denied", null));
     }
 
     @ExceptionHandler(RuntimeException.class)

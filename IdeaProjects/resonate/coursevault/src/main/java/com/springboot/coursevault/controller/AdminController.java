@@ -1,7 +1,7 @@
 package com.springboot.coursevault.controller;
 
 import com.springboot.coursevault.dto.UserDTO;
-import com.springboot.coursevault.exception.BadRequestException;
+import com.springboot.coursevault.exception.GlobalExceptionHandler;
 import com.springboot.coursevault.model.User;
 import com.springboot.coursevault.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +33,9 @@ public class AdminController {
     @PostMapping("/approve-teacher/{userId}")
     public ResponseEntity<String> approveTeacher(@PathVariable Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BadRequestException("User not found"));
+                .orElseThrow(() -> GlobalExceptionHandler.badRequest("User not found"));
         if (!"PENDING_TEACHER".equals(user.getRole())) {
-            throw new BadRequestException("User is not a pending teacher");
+            throw GlobalExceptionHandler.badRequest("User is not a pending teacher");
         }
         user.setRole("TEACHER");
         userRepository.save(user);
@@ -45,9 +45,9 @@ public class AdminController {
     @PostMapping("/decline-teacher/{userId}")
     public ResponseEntity<String> declineTeacher(@PathVariable Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BadRequestException("User not found"));
+                .orElseThrow(() -> GlobalExceptionHandler.badRequest("User not found"));
         if (!"PENDING_TEACHER".equals(user.getRole())) {
-            throw new BadRequestException("User is not a pending teacher");
+            throw GlobalExceptionHandler.badRequest("User is not a pending teacher");
         }
         user.setRole("STUDENT");
         userRepository.save(user);

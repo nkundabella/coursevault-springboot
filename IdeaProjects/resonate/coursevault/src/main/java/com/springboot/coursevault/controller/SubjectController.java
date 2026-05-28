@@ -1,6 +1,7 @@
 package com.springboot.coursevault.controller;
 
 import com.springboot.coursevault.dto.CreateSubjectRequest;
+import com.springboot.coursevault.dto.ResourceDTO;
 import com.springboot.coursevault.dto.SubjectDTO;
 import com.springboot.coursevault.model.User;
 import com.springboot.coursevault.service.CurrentUserService;
@@ -34,6 +35,32 @@ public class SubjectController {
     @GetMapping("/{id}")
     public ResponseEntity<SubjectDTO> getSubject(@PathVariable Long id) {
         return ResponseEntity.ok(subjectService.getSubjectById(id));
+    }
+
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity<SubjectDTO> createSubject(
+            @Valid @RequestBody CreateSubjectRequest request) {
+        User uploader = currentUserService.requireCurrentUser();
+        SubjectDTO result = subjectService.createSubjectMetadata(request, uploader);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SubjectDTO> updateSubject(
+            @PathVariable Long id,
+            @Valid @RequestBody CreateSubjectRequest request) {
+        User user = currentUserService.requireCurrentUser();
+        return ResponseEntity.ok(subjectService.updateSubject(id, request, user));
+    }
+
+    @PostMapping(value = "/{id}/resources", consumes = {"multipart/form-data"})
+    public ResponseEntity<ResourceDTO> addResourceToSubject(
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file,
+            @Valid @RequestPart("metadata") CreateSubjectRequest request) throws IOException {
+        User uploader = currentUserService.requireCurrentUser();
+        ResourceDTO result = subjectService.addResourceToSubject(id, request, file, uploader);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @PostMapping(consumes = {"multipart/form-data"})

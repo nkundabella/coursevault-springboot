@@ -3,8 +3,7 @@ package com.springboot.coursevault.service;
 import com.springboot.coursevault.dto.CreateSubjectRequest;
 import com.springboot.coursevault.dto.ResourceDTO;
 import com.springboot.coursevault.dto.SubjectDTO;
-import com.springboot.coursevault.exception.BadRequestException;
-import com.springboot.coursevault.exception.ResourceNotFoundException;
+import com.springboot.coursevault.exception.GlobalExceptionHandler;
 import com.springboot.coursevault.model.Resource;
 import com.springboot.coursevault.model.Subject;
 import com.springboot.coursevault.model.User;
@@ -55,7 +54,7 @@ public class SubjectService {
     @Transactional(readOnly = true)
     public SubjectDTO getSubjectById(Long id) {
         Subject subject = subjectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found"));
+                .orElseThrow(() -> GlobalExceptionHandler.notFound("Subject not found"));
         return convertToDTO(subject);
     }
 
@@ -66,7 +65,7 @@ public class SubjectService {
 
         String fileHash = fileStorageService.calculateHash(file);
         if (resourceRepository.findByFileHash(fileHash).isPresent()) {
-            throw new BadRequestException("This resource already exists (duplicate detected by hash)");
+            throw GlobalExceptionHandler.badRequest("This resource already exists (duplicate detected by hash)");
         }
 
         String savedFileName = fileStorageService.store(file);
@@ -95,11 +94,71 @@ public class SubjectService {
     }
 
     @Transactional
+    public SubjectDTO createSubjectMetadata(CreateSubjectRequest request, User actor) {
+        authorizationService.assertCanCreateSubject(actor);
+
+        Subject subject = new Subject();
+        subject.setName(InputSanitizer.cleanText(request.getName(), 120));
+        subject.setIconClass(InputSanitizer.cleanIconClass(request.getIconClass()));
+        subject.setDescription(InputSanitizer.cleanText(request.getDescription(), 500));
+        return convertToDTO(subjectRepository.save(subject));
+    }
+
+    @Transactional
+    public SubjectDTO updateSubject(Long id, CreateSubjectRequest request, User actor) {
+        authorizationService.assertCanCreateSubject(actor);
+
+        Subject subject = subjectRepository.findById(id)
+                .orElseThrow(() -> GlobalExceptionHandler.notFound("Subject not found"));
+
+        if (request.getName() != null && !request.getName().isBlank()) {
+            subject.setName(InputSanitizer.cleanText(request.getName(), 120));
+        }
+        if (request.getIconClass() != null) {
+            subject.setIconClass(InputSanitizer.cleanIconClass(request.getIconClass()));
+        }
+        if (request.getDescription() != null) {
+            subject.setDescription(InputSanitizer.cleanText(request.getDescription(), 500));
+        }
+        return convertToDTO(subjectRepository.save(subject));
+    }
+
+    @Transactional
+    public ResourceDTO addResourceToSubject(Long subjectId, CreateSubjectRequest request,
+                                            MultipartFile file, User uploader) throws IOException {
+        authorizationService.assertCanUpload(uploader);
+        authorizationService.validateResourceTypeForRole(uploader, request.getType());
+
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> GlobalExceptionHandler.notFound("Subject not found"));
+
+        String fileHash = fileStorageService.calculateHash(file);
+        if (resourceRepository.findByFileHash(fileHash).isPresent()) {
+            throw GlobalExceptionHandler.badRequest(
+                    "This resource already exists (duplicate detected by hash)");
+        }
+
+        String savedFileName = fileStorageService.store(file);
+
+        com.springboot.coursevault.model.Resource resource = new com.springboot.coursevault.model.Resource();
+        resource.setTitle(InputSanitizer.cleanText(request.getResourceTitle(), 200));
+        resource.setFilePath(savedFileName);
+        resource.setYear(InputSanitizer.parseIntInRange(String.valueOf(request.getYear()), 1, 3, 1));
+        resource.setTerm(InputSanitizer.parseIntInRange(String.valueOf(request.getTerm()), 1, 3, 1));
+        resource.setType(InputSanitizer.cleanResourceType(request.getType()));
+        resource.setSubject(subject);
+        resource.setUploader(uploader);
+        resource.setFileHash(fileHash);
+
+        return resourceDtoMapper.toDto(resourceRepository.save(resource));
+    }
+
+    @Transactional
     public void deleteSubject(Long id, User actor) {
         authorizationService.assertCanDeleteSubject(actor);
 
         Subject subject = subjectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found"));
+                .orElseThrow(() -> GlobalExceptionHandler.notFound("Subject not found"));
 
         for (Resource res : subject.getResources()) {
             fileStorageService.deleteIfExists(res.getFilePath());

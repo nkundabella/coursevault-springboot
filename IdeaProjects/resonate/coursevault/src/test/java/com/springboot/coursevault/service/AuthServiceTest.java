@@ -3,7 +3,7 @@ package com.springboot.coursevault.service;
 import com.springboot.coursevault.dto.LoginRequest;
 import com.springboot.coursevault.dto.SignupRequest;
 import com.springboot.coursevault.dto.UserDTO;
-import com.springboot.coursevault.exception.ForbiddenException;
+import org.springframework.web.server.ResponseStatusException;
 import com.springboot.coursevault.model.User;
 import com.springboot.coursevault.model.VerificationCode;
 import com.springboot.coursevault.repository.UserRepository;
@@ -88,7 +88,7 @@ class AuthServiceTest {
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
 
-        assertThrows(ForbiddenException.class, () -> authService.login(request, "127.0.0.1"));
+        assertThrows(ResponseStatusException.class, () -> authService.login(request, "127.0.0.1"));
     }
 
     @Test
