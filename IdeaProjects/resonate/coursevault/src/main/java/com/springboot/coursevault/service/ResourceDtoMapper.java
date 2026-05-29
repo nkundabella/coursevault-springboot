@@ -15,6 +15,9 @@ public class ResourceDtoMapper {
         String fileName = FileStorageService.displayFileName(resource.getFilePath());
         String downloadUrl = "/api/resources/" + resource.getId() + "/download";
 
+        Long subjectId = resource.getSubject() != null ? resource.getSubject().getId() : null;
+        String subjectName = resource.getSubject() != null ? resource.getSubject().getName() : null;
+
         return new ResourceDTO(
                 resource.getId(),
                 resource.getTitle(),
@@ -24,7 +27,9 @@ public class ResourceDtoMapper {
                 resource.getTerm(),
                 resource.getType(),
                 uploaderId,
-                uploaderName
+                uploaderName,
+                subjectId,
+                subjectName
         );
     }
 }

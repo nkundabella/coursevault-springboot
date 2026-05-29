@@ -9,6 +9,8 @@ import com.springboot.coursevault.repository.SubjectRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+
 @Service
 public class DashboardService {
 
@@ -16,18 +18,15 @@ public class DashboardService {
     private final ResourceRepository resourceRepository;
     private final BookmarkRepository bookmarkRepository;
     private final ResourceService resourceService;
-    private final CalendarService calendarService;
 
     public DashboardService(SubjectRepository subjectRepository,
                             ResourceRepository resourceRepository,
                             BookmarkRepository bookmarkRepository,
-                            ResourceService resourceService,
-                            CalendarService calendarService) {
+                            ResourceService resourceService) {
         this.subjectRepository = subjectRepository;
         this.resourceRepository = resourceRepository;
         this.bookmarkRepository = bookmarkRepository;
         this.resourceService = resourceService;
-        this.calendarService = calendarService;
     }
 
     @Transactional(readOnly = true)
@@ -44,7 +43,7 @@ public class DashboardService {
     public TimelineDTO getTimeline() {
         TimelineDTO dto = new TimelineDTO();
         dto.setRecentResources(resourceService.getRecentResources(10));
-        dto.setUpcomingEvents(calendarService.getAllEvents());
+        dto.setUpcomingEvents(Collections.emptyList());
         return dto;
     }
 }

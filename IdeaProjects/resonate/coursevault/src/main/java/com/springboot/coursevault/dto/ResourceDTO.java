@@ -10,11 +10,14 @@ public class ResourceDTO {
     private String type;
     private Long uploaderId;
     private String uploaderName;
+    private Long subjectId;
+    private String subjectName;
 
     public ResourceDTO() {}
 
     public ResourceDTO(Long id, String title, String fileName, String downloadUrl,
-                       int year, int term, String type, Long uploaderId, String uploaderName) {
+                       int year, int term, String type, Long uploaderId, String uploaderName,
+                       Long subjectId, String subjectName) {
         this.id = id;
         this.title = title;
         this.fileName = fileName;
@@ -24,6 +27,8 @@ public class ResourceDTO {
         this.type = type;
         this.uploaderId = uploaderId;
         this.uploaderName = uploaderName;
+        this.subjectId = subjectId;
+        this.subjectName = subjectName;
     }
 
     public Long getId() { return id; }
@@ -52,4 +57,10 @@ public class ResourceDTO {
 
     public String getUploaderName() { return uploaderName; }
     public void setUploaderName(String uploaderName) { this.uploaderName = uploaderName; }
+
+    public Long getSubjectId() { return subjectId; }
+    public void setSubjectId(Long subjectId) { this.subjectId = subjectId; }
+
+    public String getSubjectName() { return subjectName; }
+    public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
 }

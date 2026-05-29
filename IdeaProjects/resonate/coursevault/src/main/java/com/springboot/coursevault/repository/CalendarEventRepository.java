@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface CalendarEventRepository extends JpaRepository<CalendarEvent, Long> {
     List<CalendarEvent> findAllByOrderByDateAsc();
+
+    boolean existsByTitle(String title);
 }

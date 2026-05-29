@@ -37,7 +37,9 @@ public class ConfigController {
         existing.setSmtpHost(config.getSmtpHost() != null ? config.getSmtpHost().trim() : null);
         existing.setSmtpPort(config.getSmtpPort() != null ? config.getSmtpPort().trim() : null);
         existing.setSmtpUser(config.getSmtpUser() != null ? config.getSmtpUser().trim() : null);
-        existing.setSmtpPass(config.getSmtpPass());
+        if (config.getSmtpPass() != null && !config.getSmtpPass().isBlank()) {
+            existing.setSmtpPass(config.getSmtpPass());
+        }
         
         configRepository.save(existing);
         mailService.initializeMailSender();

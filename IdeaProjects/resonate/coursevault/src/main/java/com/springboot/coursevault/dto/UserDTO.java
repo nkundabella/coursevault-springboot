@@ -8,6 +8,7 @@ public class UserDTO {
     private String email;
     private String role;
     private String token;
+    private String securityQuestion;
 
     public UserDTO() {}
 
@@ -16,6 +17,7 @@ public class UserDTO {
         this.fullName = user.getFullName();
         this.email = user.getEmail();
         this.role = user.getRole();
+        this.securityQuestion = user.getSecurityQuestion();
     }
 
     public Long getId() { return id; }
@@ -32,4 +34,7 @@ public class UserDTO {
 
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
+
+    public String getSecurityQuestion() { return securityQuestion; }
+    public void setSecurityQuestion(String securityQuestion) { this.securityQuestion = securityQuestion; }
 }
