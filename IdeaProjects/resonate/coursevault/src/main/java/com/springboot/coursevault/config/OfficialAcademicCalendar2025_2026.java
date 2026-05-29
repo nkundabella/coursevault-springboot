@@ -6,10 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Official RCA academic calendar 2025/2026 from
- * "Academic Calendar 2025-2026 new.pdf".
- */
+
 public final class OfficialAcademicCalendar2025_2026 {
 
     public static final String MARKER_TITLE = "Start of Classes & Induction Week";
@@ -31,7 +28,6 @@ public final class OfficialAcademicCalendar2025_2026 {
         return events;
     }
 
-    // title, date, term, category, major, description
     private static final String[][] ROWS = {
         // Term 1
         {"Start of Classes & Induction Week", "2025-09-08", "1", "Academic", "true",

@@ -22,56 +22,42 @@ public class AuthController {
     }
 
     @PostMapping("/signup/initiate")
-    public ResponseEntity<?> initiateSignup(@Valid @RequestBody SignupRequest request) {
-        try {
-            authService.initiateSignup(request);
-            return ResponseEntity.ok("Verification code sent to " + request.getEmail());
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> initiateSignup(@Valid @RequestBody SignupRequest request) {
+        authService.initiateSignup(request);
+        return ResponseEntity.ok("Verification code sent to " + request.getEmail());
     }
 
     @PostMapping("/signup/verify")
-    public ResponseEntity<?> verifySignup(@Valid @RequestBody VerifyCodeRequest verifyRequest) {
-        try {
-            UserDTO result = authService.verifySignup(
-                verifyRequest.getEmail(), 
-                verifyRequest.getCode(), 
+    public ResponseEntity<UserDTO> verifySignup(@Valid @RequestBody VerifyCodeRequest verifyRequest) {
+        UserDTO result = authService.verifySignup(
+                verifyRequest.getEmail(),
+                verifyRequest.getCode(),
                 verifyRequest.getSignupData()
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
-        try {
-            UserDTO result = authService.login(request, httpRequest.getRemoteAddr());
-            return ResponseEntity.ok(result);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+    public ResponseEntity<UserDTO> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+        UserDTO result = authService.login(request, httpRequest.getRemoteAddr());
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/password-reset/initiate")
-    public ResponseEntity<?> initiateReset(@RequestParam String email, @RequestParam String question, @RequestParam String answer) {
-        try {
-            String msg = authService.initiatePasswordReset(email, question, answer);
-            return ResponseEntity.ok(msg);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> initiateReset(
+            @RequestParam String email,
+            @RequestParam String question,
+            @RequestParam String answer) {
+        String msg = authService.initiatePasswordReset(email, question, answer);
+        return ResponseEntity.ok(msg);
     }
 
     @PostMapping("/password-reset/finalize")
-    public ResponseEntity<?> finalizeReset(@RequestParam String email, @RequestParam String code, @RequestParam String newPassword) {
-        try {
-            authService.finalizePasswordReset(email, code, newPassword);
-            return ResponseEntity.ok("Password updated successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> finalizeReset(
+            @RequestParam String email,
+            @RequestParam String code,
+            @RequestParam String newPassword) {
+        authService.finalizePasswordReset(email, code, newPassword);
+        return ResponseEntity.ok("Password updated successfully");
     }
 }

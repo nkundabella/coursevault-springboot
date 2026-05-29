@@ -55,8 +55,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
+        if (ex instanceof ResponseStatusException rse) {
+            return handleResponseStatus(rse);
+        }
+        String message = ex.getMessage() != null ? ex.getMessage() : "Something went wrong";
         return ResponseEntity.badRequest()
-                .body(errorBody(HttpStatus.BAD_REQUEST, ex.getMessage(), null));
+                .body(errorBody(HttpStatus.BAD_REQUEST, message, null));
     }
 
     private Map<String, Object> errorBody(HttpStatus status, String message, List<String> messages) {
