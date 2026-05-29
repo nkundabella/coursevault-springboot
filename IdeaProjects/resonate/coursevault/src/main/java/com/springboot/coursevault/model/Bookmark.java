@@ -3,7 +3,9 @@ package com.springboot.coursevault.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "bookmarks")
+@Table(name = "bookmarks", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "resource_id"})
+})
 public class Bookmark {
     
     @Id

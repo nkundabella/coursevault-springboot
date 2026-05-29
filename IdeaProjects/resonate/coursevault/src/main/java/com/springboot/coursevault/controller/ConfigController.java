@@ -1,8 +1,10 @@
 package com.springboot.coursevault.controller;
 
+import com.springboot.coursevault.dto.SystemConfigDTO;
 import com.springboot.coursevault.model.SystemConfig;
 import com.springboot.coursevault.repository.SystemConfigRepository;
 import com.springboot.coursevault.service.MailService;
+import com.springboot.coursevault.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,19 @@ public class ConfigController {
 
     private final SystemConfigRepository configRepository;
     private final MailService mailService;
+    private final UserService userService;
 
-    public ConfigController(SystemConfigRepository configRepository, MailService mailService) {
+    public ConfigController(SystemConfigRepository configRepository,
+                            MailService mailService,
+                            UserService userService) {
         this.configRepository = configRepository;
         this.mailService = mailService;
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public ResponseEntity<SystemConfigDTO> getConfig() {
+        return ResponseEntity.ok(userService.getConfig());
     }
 
     @PostMapping("/smtp")

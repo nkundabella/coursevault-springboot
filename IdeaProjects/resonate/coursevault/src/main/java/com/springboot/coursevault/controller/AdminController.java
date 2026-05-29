@@ -1,6 +1,8 @@
 package com.springboot.coursevault.controller;
 
+import com.springboot.coursevault.dto.AdminStatsDTO;
 import com.springboot.coursevault.dto.UserDTO;
+import com.springboot.coursevault.service.UserService;
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
 import com.springboot.coursevault.model.User;
 import com.springboot.coursevault.repository.UserRepository;
@@ -17,9 +19,16 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public AdminController(UserRepository userRepository) {
+    public AdminController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<AdminStatsDTO> getStats() {
+        return ResponseEntity.ok(userService.getAdminStats());
     }
 
     @GetMapping("/pending-teachers")

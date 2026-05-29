@@ -67,7 +67,9 @@ class AuthServiceTest {
         LoginRequest request = new LoginRequest();
         request.setEmail("test@example.com");
         request.setPassword(rawPassword);
+        request.setCaptchaToken("valid-captcha-token");
 
+        when(captchaService.verify(eq("valid-captcha-token"), eq("127.0.0.1"))).thenReturn(true);
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(rawPassword, testUser.getPassword())).thenReturn(true);
         when(jwtUtil.generateToken(anyString(), anyString())).thenReturn("mocked-jwt-token");
@@ -85,10 +87,14 @@ class AuthServiceTest {
         LoginRequest request = new LoginRequest();
         request.setEmail("test@example.com");
         request.setPassword(rawPassword);
+        request.setCaptchaToken("valid-captcha-token");
 
+        when(captchaService.verify(eq("valid-captcha-token"), eq("127.0.0.1"))).thenReturn(true);
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
 
-        assertThrows(ResponseStatusException.class, () -> authService.login(request, "127.0.0.1"));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                () -> authService.login(request, "127.0.0.1"));
+        assertTrue(ex.getReason() != null && ex.getReason().contains("pending"));
     }
 
     @Test

@@ -40,10 +40,11 @@ public class AuthService {
 
     public UserDTO login(LoginRequest request, String clientIp) {
         String captchaToken = request.getCaptchaToken();
-        if (captchaToken != null && !captchaToken.isBlank()) {
-            if (!captchaService.verify(captchaToken, clientIp)) {
-                throw GlobalExceptionHandler.badRequest("CAPTCHA verification failed. Please try again.");
-            }
+        if (captchaToken == null || captchaToken.isBlank()) {
+            throw GlobalExceptionHandler.badRequest("CAPTCHA verification is required.");
+        }
+        if (!captchaService.verify(captchaToken, clientIp)) {
+            throw GlobalExceptionHandler.badRequest("CAPTCHA verification failed. Please try again.");
         }
 
         User user = userRepository.findByEmail(request.getEmail())

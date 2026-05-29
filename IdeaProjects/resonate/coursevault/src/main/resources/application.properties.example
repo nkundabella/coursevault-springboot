@@ -1,16 +1,27 @@
 # Database Configuration
-spring.datasource.url=jdbc:postgresql://localhost:5432/dbname
-spring.datasource.username=postgres
-spring.datasource.password=yourpassword
+spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/course_vault}
+spring.datasource.username=${DB_USERNAME:postgres}
+spring.datasource.password=${DB_PASSWORD:yourpassword}
 spring.datasource.driver-class-name=org.postgresql.Driver
+
+server.port=${SERVER_PORT:8083}
 
 # JPA/Hibernate Properties
 spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
+spring.jpa.show-sql=false
 spring.jpa.properties.hibernate.format_sql=true
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.defer-datasource-initialization=true
+spring.sql.init.mode=always
+spring.sql.init.separator=^
 
 # File Upload Configuration
-file.upload-dir=${user.home}/ProjectUploads
+file.upload-dir=${FILE_UPLOAD_DIR:${user.home}/CourseVaultUploads}
 spring.servlet.multipart.max-file-size=10MB
 spring.servlet.multipart.max-request-size=50MB
+
+# Cloudflare Turnstile (use test keys for local dev)
+captcha.secret-key=${CAPTCHA_SECRET_KEY:1x0000000000000000000000000000000AA}
+
+# JWT Configuration
+jwt.secret=${JWT_SECRET:change-this-to-a-long-random-secret-in-production}
+jwt.expiration=${JWT_EXPIRATION_MS:86400000}
