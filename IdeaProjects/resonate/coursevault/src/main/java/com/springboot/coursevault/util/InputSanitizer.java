@@ -12,11 +12,8 @@ public final class InputSanitizer {
         if (text.length() > maxLength) {
             text = text.substring(0, maxLength);
         }
-        return text.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;")
-                .replace("'", "&#x27;");
+        // Store plain text; React escapes on render. Do not HTML-entity-encode API fields.
+        return text;
     }
 
     public static String cleanIconClass(String iconClass) {
