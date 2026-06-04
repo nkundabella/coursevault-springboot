@@ -62,7 +62,7 @@ public class AuthService {
         }
 
         UserDTO userDTO = new UserDTO(user);
-        userDTO.setToken(jwtUtil.generateToken(user.getEmail(), user.getRole()));
+        userDTO.setToken(jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getId()));
         return userDTO;
     }
 
@@ -115,7 +115,7 @@ public class AuthService {
         codeRepository.delete(vc);
 
         UserDTO userDTO = new UserDTO(savedUser);
-        userDTO.setToken(jwtUtil.generateToken(savedUser.getEmail(), savedUser.getRole()));
+        userDTO.setToken(jwtUtil.generateToken(savedUser.getEmail(), savedUser.getRole(), savedUser.getId()));
         return userDTO;
     }
 
