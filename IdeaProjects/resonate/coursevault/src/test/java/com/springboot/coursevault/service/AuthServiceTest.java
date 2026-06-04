@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ class AuthServiceTest {
     private VerificationCodeRepository codeRepository;
 
     @Mock
-    private MailService mailService;
+    private RestTemplate restTemplate;
 
     @Mock
     private CaptchaService captchaService;
@@ -109,6 +110,7 @@ class AuthServiceTest {
 
         verify(codeRepository).deleteByEmailAndType("newuser@example.com", "SIGNUP");
         verify(codeRepository).save(any(VerificationCode.class));
-        verify(mailService).sendVerificationCode(eq("newuser@example.com"), anyString());
+        verify(restTemplate).postForObject(eq("http://localhost:8084/api/notifications/send-code"), any(), eq(String.class));
     }
 }
+

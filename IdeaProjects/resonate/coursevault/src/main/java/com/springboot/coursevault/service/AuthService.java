@@ -3,6 +3,7 @@ package com.springboot.coursevault.service;
 import com.springboot.coursevault.dto.LoginRequest;
 import com.springboot.coursevault.dto.SignupRequest;
 import com.springboot.coursevault.dto.UserDTO;
+import com.springboot.coursevault.dto.SendCodeRequest;
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
 import com.springboot.coursevault.model.User;
 import com.springboot.coursevault.model.VerificationCode;
@@ -13,26 +14,27 @@ import com.springboot.coursevault.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
     private final VerificationCodeRepository codeRepository;
-    private final MailService mailService;
+    private final RestTemplate restTemplate;
     private final CaptchaService captchaService;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
     public AuthService(UserRepository userRepository,
                        VerificationCodeRepository codeRepository,
-                       MailService mailService,
+                       RestTemplate restTemplate,
                        CaptchaService captchaService,
                        JwtUtil jwtUtil,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.codeRepository = codeRepository;
-        this.mailService = mailService;
+        this.restTemplate = restTemplate;
         this.captchaService = captchaService;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
@@ -74,7 +76,7 @@ public class AuthService {
         codeRepository.deleteByEmailAndType(request.getEmail(), "SIGNUP");
         codeRepository.save(new VerificationCode(request.getEmail(), code, "SIGNUP", 10));
 
-        mailService.sendVerificationCode(request.getEmail(), code);
+        sendCode(request.getEmail(), code);
     }
 
     @Transactional
@@ -132,7 +134,7 @@ public class AuthService {
         codeRepository.deleteByEmailAndType(email, "RESET");
         codeRepository.save(new VerificationCode(email, code, "RESET", 10));
 
-        mailService.sendVerificationCode(email, code);
+        sendCode(email, code);
         return "Verification code sent to email";
     }
 
@@ -151,6 +153,15 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         codeRepository.delete(vc);
+    }
+
+    private void sendCode(String email, String code) {
+        try {
+            SendCodeRequest req = new SendCodeRequest(email, code);
+            restTemplate.postForObject("http://localhost:8084/api/notifications/send-code", req, String.class);
+        } catch (Exception e) {
+            System.err.println("Notification Service failed to send verification code: " + e.getMessage());
+        }
     }
 
     public String hashSecurityAnswer(String answer) {

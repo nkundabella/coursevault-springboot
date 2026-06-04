@@ -2,9 +2,7 @@ package com.springboot.coursevault.service;
 
 import com.springboot.coursevault.dto.*;
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
-import com.springboot.coursevault.model.SystemConfig;
 import com.springboot.coursevault.model.User;
-import com.springboot.coursevault.repository.SystemConfigRepository;
 import com.springboot.coursevault.repository.UserRepository;
 import com.springboot.coursevault.util.InputSanitizer;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,16 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final SystemConfigRepository configRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
 
     public UserService(UserRepository userRepository,
-                       SystemConfigRepository configRepository,
                        PasswordEncoder passwordEncoder,
                        AuthService authService) {
         this.userRepository = userRepository;
-        this.configRepository = configRepository;
         this.passwordEncoder = passwordEncoder;
         this.authService = authService;
     }
@@ -72,17 +67,5 @@ public class UserService {
         stats.setStudentCount(userRepository.findByRole("STUDENT").size());
         stats.setPendingTeacherCount(userRepository.findByRole("PENDING_TEACHER").size());
         return stats;
-    }
-
-    @Transactional(readOnly = true)
-    public SystemConfigDTO getConfig() {
-        SystemConfig config = configRepository.findAll().stream().findFirst().orElse(new SystemConfig());
-        SystemConfigDTO dto = new SystemConfigDTO();
-        dto.setId(config.getId());
-        dto.setSmtpHost(config.getSmtpHost());
-        dto.setSmtpPort(config.getSmtpPort());
-        dto.setSmtpUser(config.getSmtpUser());
-        dto.setSmtpPasswordConfigured(config.getSmtpPass() != null && !config.getSmtpPass().isBlank());
-        return dto;
     }
 }
