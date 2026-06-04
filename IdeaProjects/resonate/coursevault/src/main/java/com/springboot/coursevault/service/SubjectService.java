@@ -86,7 +86,7 @@ public class SubjectService {
         resource.setTerm(InputSanitizer.parseIntInRange(String.valueOf(request.getTerm()), 1, 3, 1));
         resource.setType(InputSanitizer.cleanResourceType(request.getType()));
         resource.setSubject(subject);
-        resource.setUploader(uploader);
+        resource.setUploaderId(uploader.getId());
         resource.setFileHash(fileHash);
 
         resourceRepository.save(resource);
@@ -147,7 +147,7 @@ public class SubjectService {
         resource.setTerm(InputSanitizer.parseIntInRange(String.valueOf(request.getTerm()), 1, 3, 1));
         resource.setType(InputSanitizer.cleanResourceType(request.getType()));
         resource.setSubject(subject);
-        resource.setUploader(uploader);
+        resource.setUploaderId(uploader.getId());
         resource.setFileHash(fileHash);
 
         return resourceDtoMapper.toDto(resourceRepository.save(resource));

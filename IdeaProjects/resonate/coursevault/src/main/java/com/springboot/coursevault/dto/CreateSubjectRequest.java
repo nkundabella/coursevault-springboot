@@ -3,7 +3,9 @@ package com.springboot.coursevault.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class CreateSubjectRequest {
+public class
+
+CreateSubjectRequest {
     @NotBlank(message = "Subject name is required")
     @Size(max = 120)
     private String name;

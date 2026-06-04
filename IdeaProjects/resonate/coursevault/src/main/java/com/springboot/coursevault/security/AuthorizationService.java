@@ -67,8 +67,8 @@ public class AuthorizationService {
         if ("ADMIN".equals(role) || "TEACHER".equals(role)) {
             return;
         }
-        if (resource.getUploader() != null
-                && resource.getUploader().getId().equals(user.getId())) {
+        if (resource.getUploaderId() != null
+                && resource.getUploaderId().equals(user.getId())) {
             return;
         }
         throw GlobalExceptionHandler.forbidden("You are not allowed to delete this resource");
@@ -81,8 +81,8 @@ public class AuthorizationService {
         if ("ADMIN".equals(user.getRole())) {
             return;
         }
-        if (resource.getUploader() != null
-                && resource.getUploader().getId().equals(user.getId())) {
+        if (resource.getUploaderId() != null
+                && resource.getUploaderId().equals(user.getId())) {
             return;
         }
         throw GlobalExceptionHandler.forbidden("You are not allowed to edit this resource");

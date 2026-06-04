@@ -22,9 +22,8 @@ public class CalendarEvent {
     private boolean major;
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -47,6 +46,6 @@ public class CalendarEvent {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 }

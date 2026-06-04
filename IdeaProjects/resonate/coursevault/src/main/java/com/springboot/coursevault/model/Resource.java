@@ -24,16 +24,15 @@ public class Resource {
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "uploader_id")
-    private User uploader;
+    @Column(name = "uploader_id")
+    private Long uploaderId;
 
     @Column
     private String fileHash;
 
     public Resource() {}
 
-    public Resource(Long id, String title, String filePath, int year, int term, String type, Subject subject, User uploader) {
+    public Resource(Long id, String title, String filePath, int year, int term, String type, Subject subject, Long uploaderId) {
         this.id = id;
         this.title = title;
         this.filePath = filePath;
@@ -41,7 +40,7 @@ public class Resource {
         this.term = term;
         this.type = type;
         this.subject = subject;
-        this.uploader = uploader;
+        this.uploaderId = uploaderId;
     }
 
     public Long getId() { return id; }
@@ -65,8 +64,8 @@ public class Resource {
     public Subject getSubject() { return subject; }
     public void setSubject(Subject subject) { this.subject = subject; }
 
-    public User getUploader() { return uploader; }
-    public void setUploader(User uploader) { this.uploader = uploader; }
+    public Long getUploaderId() { return uploaderId; }
+    public void setUploaderId(Long uploaderId) { this.uploaderId = uploaderId; }
 
     public String getFileHash() { return fileHash; }
     public void setFileHash(String fileHash) { this.fileHash = fileHash; }

@@ -75,10 +75,10 @@ public class ResourceService {
     public void toggleBookmark(User user, Long resourceId) {
         com.springboot.coursevault.model.Resource resource = getResourceEntity(resourceId);
 
-        bookmarkRepository.findByUserAndResource(user, resource)
+        bookmarkRepository.findByUserIdAndResource(user.getId(), resource)
                 .ifPresentOrElse(
                         bookmarkRepository::delete,
-                        () -> bookmarkRepository.save(new Bookmark(user, resource))
+                        () -> bookmarkRepository.save(new Bookmark(user.getId(), resource))
                 );
     }
 
@@ -123,7 +123,7 @@ public class ResourceService {
 
     @Transactional(readOnly = true)
     public List<ResourceDTO> getBookmarksByUser(User user) {
-        return bookmarkRepository.findByUser(user).stream()
+        return bookmarkRepository.findByUserId(user.getId()).stream()
                 .map(bookmark -> resourceDtoMapper.toDto(bookmark.getResource()))
                 .collect(Collectors.toList());
     }

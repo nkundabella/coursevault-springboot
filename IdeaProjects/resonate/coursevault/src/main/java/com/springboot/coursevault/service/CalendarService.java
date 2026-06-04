@@ -46,7 +46,7 @@ public class CalendarService {
         event.setCategory(InputSanitizer.cleanText(request.getCategory(), 50));
         event.setMajor(request.isMajor());
         event.setDescription(InputSanitizer.cleanText(request.getDescription(), 500));
-        event.setUser(user);
+        event.setUserId(user.getId());
         return toDto(calendarEventRepository.save(event));
     }
 

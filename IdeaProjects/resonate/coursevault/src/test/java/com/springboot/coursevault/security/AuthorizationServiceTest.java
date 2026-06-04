@@ -30,7 +30,7 @@ class AuthorizationServiceTest {
         resource = new Resource();
         resource.setId(10L);
         User uploader = user(99L, "STUDENT");
-        resource.setUploader(uploader);
+        resource.setUploaderId(uploader.getId());
     }
 
     private User user(Long id, String role) {
@@ -70,7 +70,7 @@ class AuthorizationServiceTest {
 
     @Test
     void uploaderCanDeleteOwnResource() {
-        resource.setUploader(student);
+        resource.setUploaderId(student.getId());
         assertDoesNotThrow(() -> authorizationService.assertCanDeleteResource(student, resource));
     }
 }

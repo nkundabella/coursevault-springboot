@@ -34,7 +34,7 @@ public class DashboardService {
         DashboardDTO dto = new DashboardDTO();
         dto.setSubjectCount(subjectRepository.count());
         dto.setResourceCount(resourceRepository.count());
-        dto.setBookmarkCount(bookmarkRepository.findByUser(user).size());
+        dto.setBookmarkCount(bookmarkRepository.findByUserId(user.getId()).size());
         dto.setRecentResources(resourceService.getRecentResources(3));
         return dto;
     }

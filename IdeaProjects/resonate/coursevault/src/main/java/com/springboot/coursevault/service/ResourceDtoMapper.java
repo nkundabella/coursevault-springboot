@@ -2,16 +2,27 @@ package com.springboot.coursevault.service;
 
 import com.springboot.coursevault.dto.ResourceDTO;
 import com.springboot.coursevault.model.Resource;
+import com.springboot.coursevault.model.User;
+import com.springboot.coursevault.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ResourceDtoMapper {
 
+    private final UserRepository userRepository;
+
+    public ResourceDtoMapper(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public ResourceDTO toDto(Resource resource) {
-        Long uploaderId = resource.getUploader() != null ? resource.getUploader().getId() : null;
-        String uploaderName = resource.getUploader() != null
-                ? resource.getUploader().getFullName()
-                : "Unknown";
+        Long uploaderId = resource.getUploaderId();
+        String uploaderName = "Unknown";
+        if (uploaderId != null) {
+            uploaderName = userRepository.findById(uploaderId)
+                    .map(User::getFullName)
+                    .orElse("Unknown");
+        }
         String fileName = FileStorageService.displayFileName(resource.getFilePath());
         String downloadUrl = "/api/resources/" + resource.getId() + "/download";
 
