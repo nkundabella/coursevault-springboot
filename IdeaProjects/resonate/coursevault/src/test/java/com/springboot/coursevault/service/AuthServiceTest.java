@@ -110,7 +110,7 @@ class AuthServiceTest {
 
         verify(codeRepository).deleteByEmailAndType("newuser@example.com", "SIGNUP");
         verify(codeRepository).save(any(VerificationCode.class));
-        verify(restTemplate).postForObject(eq("http://localhost:8084/api/notifications/send-code"), any(), eq(String.class));
+        verify(restTemplate).postForObject(eq("http://notification-service/api/notifications/send-code"), any(), eq(String.class));
     }
 }
 

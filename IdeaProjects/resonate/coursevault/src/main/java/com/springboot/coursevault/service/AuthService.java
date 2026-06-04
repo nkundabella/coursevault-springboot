@@ -158,7 +158,7 @@ public class AuthService {
     private void sendCode(String email, String code) {
         try {
             SendCodeRequest req = new SendCodeRequest(email, code);
-            restTemplate.postForObject("http://localhost:8084/api/notifications/send-code", req, String.class);
+            restTemplate.postForObject("http://notification-service/api/notifications/send-code", req, String.class);
         } catch (Exception e) {
             System.err.println("Notification Service failed to send verification code: " + e.getMessage());
         }

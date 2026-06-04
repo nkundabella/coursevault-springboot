@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 public class ConfigController {
 
     private final RestTemplate restTemplate;
-    private static final String NOTIFICATION_SERVICE_URL = "http://localhost:8084/api/config";
+    private static final String NOTIFICATION_SERVICE_URL = "http://notification-service/api/config";
 
     public ConfigController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
