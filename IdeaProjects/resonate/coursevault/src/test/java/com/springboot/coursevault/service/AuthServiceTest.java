@@ -73,7 +73,7 @@ class AuthServiceTest {
         when(captchaService.verify(eq("valid-captcha-token"), eq("127.0.0.1"))).thenReturn(true);
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(rawPassword, testUser.getPassword())).thenReturn(true);
-        when(jwtUtil.generateToken(anyString(), anyString())).thenReturn("mocked-jwt-token");
+        when(jwtUtil.generateToken(anyString(), anyString(), anyLong())).thenReturn("mocked-jwt-token");
 
         UserDTO result = authService.login(request, "127.0.0.1");
 
