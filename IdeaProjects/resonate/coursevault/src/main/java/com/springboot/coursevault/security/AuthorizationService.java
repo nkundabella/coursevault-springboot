@@ -1,8 +1,11 @@
 package com.springboot.coursevault.security;
 
+import com.springboot.coursevault.user.User;
+import com.springboot.coursevault.resource.Resource;
+
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
-import com.springboot.coursevault.model.Resource;
-import com.springboot.coursevault.model.User;
+import com.springboot.coursevault.resource.Resource;
+import com.springboot.coursevault.user.User;
 import org.springframework.stereotype.Service;
 
 @Service
