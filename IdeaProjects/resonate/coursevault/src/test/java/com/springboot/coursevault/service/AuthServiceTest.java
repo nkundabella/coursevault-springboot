@@ -1,13 +1,23 @@
 package com.springboot.coursevault.service;
 
-import com.springboot.coursevault.dto.LoginRequest;
-import com.springboot.coursevault.dto.SignupRequest;
-import com.springboot.coursevault.dto.UserDTO;
+import com.springboot.coursevault.auth.AuthService;
+import com.springboot.coursevault.auth.SignupRequest;
+import com.springboot.coursevault.user.UserRepository;
+import com.springboot.coursevault.auth.CaptchaService;
+import com.springboot.coursevault.auth.VerificationCodeRepository;
+import com.springboot.coursevault.user.User;
+import com.springboot.coursevault.user.UserDTO;
+import com.springboot.coursevault.auth.LoginRequest;
+import com.springboot.coursevault.auth.VerificationCode;
+
+import com.springboot.coursevault.user.User;
+import com.springboot.coursevault.auth.SignupRequest;
+import com.springboot.coursevault.auth.AuthService;
+import com.springboot.coursevault.user.UserDTO;
+import com.springboot.coursevault.auth.VerificationCode;
+import com.springboot.coursevault.auth.LoginRequest;
+
 import org.springframework.web.server.ResponseStatusException;
-import com.springboot.coursevault.model.User;
-import com.springboot.coursevault.model.VerificationCode;
-import com.springboot.coursevault.repository.UserRepository;
-import com.springboot.coursevault.repository.VerificationCodeRepository;
 import com.springboot.coursevault.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

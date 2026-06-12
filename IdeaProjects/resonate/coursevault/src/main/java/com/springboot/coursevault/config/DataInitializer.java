@@ -1,5 +1,8 @@
 package com.springboot.coursevault.config;
 
+import com.springboot.coursevault.user.UserRepository;
+import com.springboot.coursevault.user.User;
+
 import com.springboot.coursevault.user.User;
 
 import com.springboot.coursevault.user.User;

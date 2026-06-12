@@ -2,6 +2,8 @@ package com.springboot.coursevault.auth;
 
 import com.springboot.coursevault.user.UserDTO;
 
+import com.springboot.coursevault.user.UserDTO;
+
 import com.springboot.coursevault.auth.LoginRequest;
 import com.springboot.coursevault.auth.SignupRequest;
 import com.springboot.coursevault.user.UserDTO;

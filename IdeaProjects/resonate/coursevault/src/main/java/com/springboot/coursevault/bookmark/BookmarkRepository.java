@@ -2,6 +2,8 @@ package com.springboot.coursevault.bookmark;
 
 import com.springboot.coursevault.resource.Resource;
 
+import com.springboot.coursevault.resource.Resource;
+
 import com.springboot.coursevault.bookmark.Bookmark;
 import com.springboot.coursevault.resource.Resource;
 import org.springframework.data.jpa.repository.JpaRepository;

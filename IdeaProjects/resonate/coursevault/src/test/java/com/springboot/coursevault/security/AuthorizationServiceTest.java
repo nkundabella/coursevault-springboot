@@ -1,8 +1,12 @@
 package com.springboot.coursevault.security;
 
+import com.springboot.coursevault.resource.Resource;
+import com.springboot.coursevault.user.User;
+
+import com.springboot.coursevault.resource.Resource;
+import com.springboot.coursevault.user.User;
+
 import org.springframework.web.server.ResponseStatusException;
-import com.springboot.coursevault.model.Resource;
-import com.springboot.coursevault.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

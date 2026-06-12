@@ -1,5 +1,12 @@
 package com.springboot.coursevault.subject;
 
+import com.springboot.coursevault.resource.ResourceDTO;
+import com.springboot.coursevault.resource.Resource;
+import com.springboot.coursevault.resource.FileStorageService;
+import com.springboot.coursevault.bookmark.BookmarkRepository;
+import com.springboot.coursevault.resource.ResourceRepository;
+import com.springboot.coursevault.user.User;
+
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.resource.ResourceDTO;
 import com.springboot.coursevault.resource.Resource;

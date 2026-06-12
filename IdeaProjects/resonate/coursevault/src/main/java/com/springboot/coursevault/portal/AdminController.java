@@ -1,5 +1,10 @@
 package com.springboot.coursevault.portal;
 
+import com.springboot.coursevault.user.UserRepository;
+import com.springboot.coursevault.user.User;
+import com.springboot.coursevault.user.UserService;
+import com.springboot.coursevault.user.UserDTO;
+
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.user.UserDTO;
 import com.springboot.coursevault.user.UserService;

@@ -1,5 +1,11 @@
 package com.springboot.coursevault.portal;
 
+import com.springboot.coursevault.bookmark.BookmarkRepository;
+import com.springboot.coursevault.resource.ResourceRepository;
+import com.springboot.coursevault.resource.ResourceService;
+import com.springboot.coursevault.user.User;
+import com.springboot.coursevault.subject.SubjectRepository;
+
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.resource.ResourceService;
 

@@ -2,6 +2,8 @@ package com.springboot.coursevault.user;
 
 import com.springboot.coursevault.auth.ChangePasswordRequest;
 
+import com.springboot.coursevault.auth.ChangePasswordRequest;
+
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.user.CurrentUserService;
 import com.springboot.coursevault.user.UserService;

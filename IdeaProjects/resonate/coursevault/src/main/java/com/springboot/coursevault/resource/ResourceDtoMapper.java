@@ -1,5 +1,8 @@
 package com.springboot.coursevault.resource;
 
+import com.springboot.coursevault.user.UserRepository;
+import com.springboot.coursevault.user.User;
+
 import com.springboot.coursevault.user.User;
 
 import com.springboot.coursevault.resource.ResourceDTO;

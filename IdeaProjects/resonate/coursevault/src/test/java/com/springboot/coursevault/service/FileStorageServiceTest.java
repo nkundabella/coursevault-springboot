@@ -1,5 +1,7 @@
 package com.springboot.coursevault.service;
 
+import com.springboot.coursevault.resource.FileStorageService;
+
 import org.springframework.web.server.ResponseStatusException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

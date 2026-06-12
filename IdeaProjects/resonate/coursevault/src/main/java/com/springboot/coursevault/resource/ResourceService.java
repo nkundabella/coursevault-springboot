@@ -1,5 +1,10 @@
 package com.springboot.coursevault.resource;
 
+import com.springboot.coursevault.bookmark.Bookmark;
+import com.springboot.coursevault.user.User;
+import com.springboot.coursevault.subject.CreateSubjectRequest;
+import com.springboot.coursevault.bookmark.BookmarkRepository;
+
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.bookmark.Bookmark;
 import com.springboot.coursevault.subject.CreateSubjectRequest;

@@ -2,6 +2,8 @@ package com.springboot.coursevault.resource;
 
 import com.springboot.coursevault.user.User;
 
+import com.springboot.coursevault.user.User;
+
 import com.springboot.coursevault.resource.ResourceDTO;
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.user.CurrentUserService;

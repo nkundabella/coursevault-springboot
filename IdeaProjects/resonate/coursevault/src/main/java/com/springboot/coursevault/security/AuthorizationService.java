@@ -3,6 +3,9 @@ package com.springboot.coursevault.security;
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.resource.Resource;
 
+import com.springboot.coursevault.user.User;
+import com.springboot.coursevault.resource.Resource;
+
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
 import com.springboot.coursevault.resource.Resource;
 import com.springboot.coursevault.user.User;

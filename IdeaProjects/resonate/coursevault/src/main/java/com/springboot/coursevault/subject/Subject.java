@@ -2,6 +2,8 @@ package com.springboot.coursevault.subject;
 
 import com.springboot.coursevault.resource.Resource;
 
+import com.springboot.coursevault.resource.Resource;
+
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
