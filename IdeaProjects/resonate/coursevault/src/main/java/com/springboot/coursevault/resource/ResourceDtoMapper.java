@@ -3,12 +3,7 @@ package com.springboot.coursevault.resource;
 import com.springboot.coursevault.user.UserRepository;
 import com.springboot.coursevault.user.User;
 
-import com.springboot.coursevault.user.User;
 
-import com.springboot.coursevault.resource.ResourceDTO;
-import com.springboot.coursevault.resource.Resource;
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.user.UserRepository;
 import org.springframework.stereotype.Component;
 
 @Component

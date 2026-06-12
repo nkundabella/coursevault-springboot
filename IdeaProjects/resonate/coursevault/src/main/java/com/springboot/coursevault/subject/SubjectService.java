@@ -7,22 +7,9 @@ import com.springboot.coursevault.bookmark.BookmarkRepository;
 import com.springboot.coursevault.resource.ResourceRepository;
 import com.springboot.coursevault.user.User;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.resource.ResourceDTO;
-import com.springboot.coursevault.resource.Resource;
-import com.springboot.coursevault.resource.FileStorageService;
 import com.springboot.coursevault.resource.ResourceDtoMapper;
 
-import com.springboot.coursevault.subject.CreateSubjectRequest;
-import com.springboot.coursevault.resource.ResourceDTO;
-import com.springboot.coursevault.subject.SubjectDTO;
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
-import com.springboot.coursevault.resource.Resource;
-import com.springboot.coursevault.subject.Subject;
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.bookmark.BookmarkRepository;
-import com.springboot.coursevault.resource.ResourceRepository;
-import com.springboot.coursevault.subject.SubjectRepository;
 import com.springboot.coursevault.security.AuthorizationService;
 import com.springboot.coursevault.util.InputSanitizer;
 import org.springframework.stereotype.Service;

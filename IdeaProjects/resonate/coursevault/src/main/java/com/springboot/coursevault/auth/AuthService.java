@@ -4,18 +4,8 @@ import com.springboot.coursevault.user.UserRepository;
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.user.UserDTO;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.user.UserDTO;
 
-import com.springboot.coursevault.auth.LoginRequest;
-import com.springboot.coursevault.auth.SignupRequest;
-import com.springboot.coursevault.user.UserDTO;
-import com.springboot.coursevault.auth.SendCodeRequest;
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.auth.VerificationCode;
-import com.springboot.coursevault.user.UserRepository;
-import com.springboot.coursevault.auth.VerificationCodeRepository;
 import com.springboot.coursevault.util.InputSanitizer;
 import com.springboot.coursevault.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -2,7 +2,6 @@ package com.springboot.coursevault.resource;
 
 import com.springboot.coursevault.subject.Subject;
 
-import com.springboot.coursevault.subject.Subject;
 
 import jakarta.persistence.*;
 

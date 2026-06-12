@@ -1,6 +1,5 @@
 package com.springboot.coursevault.auth;
 
-import com.springboot.coursevault.auth.VerificationCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

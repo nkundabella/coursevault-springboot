@@ -2,7 +2,6 @@ package com.springboot.coursevault.subject;
 
 import com.springboot.coursevault.resource.ResourceDTO;
 
-import com.springboot.coursevault.resource.ResourceDTO;
 
 import java.util.List;
 

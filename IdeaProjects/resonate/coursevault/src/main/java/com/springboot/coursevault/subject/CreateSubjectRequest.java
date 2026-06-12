@@ -1,8 +1,6 @@
 package com.springboot.coursevault.subject;
 
-import com.springboot.coursevault.resource.Resource;
 
-import com.springboot.coursevault.resource.Resource;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

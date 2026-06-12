@@ -1,12 +1,8 @@
 package com.springboot.coursevault.portal;
 
-import com.springboot.coursevault.portal.DashboardDTO;
-import com.springboot.coursevault.portal.TimelineDTO;
 import com.springboot.coursevault.user.CurrentUserService;
-import com.springboot.coursevault.portal.DashboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

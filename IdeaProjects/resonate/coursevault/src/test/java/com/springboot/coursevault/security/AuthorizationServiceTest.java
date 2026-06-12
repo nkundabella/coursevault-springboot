@@ -3,8 +3,6 @@ package com.springboot.coursevault.security;
 import com.springboot.coursevault.resource.Resource;
 import com.springboot.coursevault.user.User;
 
-import com.springboot.coursevault.resource.Resource;
-import com.springboot.coursevault.user.User;
 
 import org.springframework.web.server.ResponseStatusException;
 import org.junit.jupiter.api.BeforeEach;
