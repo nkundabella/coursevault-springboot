@@ -3,10 +3,7 @@ package com.springboot.coursevault.security;
 import com.springboot.coursevault.user.UserRepository;
 import com.springboot.coursevault.user.User;
 
-import com.springboot.coursevault.user.User;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.user.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

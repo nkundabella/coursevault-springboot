@@ -5,16 +5,8 @@ import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.user.UserService;
 import com.springboot.coursevault.user.UserDTO;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.user.UserDTO;
-import com.springboot.coursevault.user.UserService;
 
-import com.springboot.coursevault.portal.AdminStatsDTO;
-import com.springboot.coursevault.user.UserDTO;
-import com.springboot.coursevault.user.UserService;
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.user.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

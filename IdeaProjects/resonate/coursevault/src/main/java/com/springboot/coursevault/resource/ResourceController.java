@@ -1,19 +1,11 @@
 package com.springboot.coursevault.resource;
 
-import com.springboot.coursevault.bookmark.Bookmark;
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.subject.CreateSubjectRequest;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.bookmark.Bookmark;
-import com.springboot.coursevault.subject.CreateSubjectRequest;
 
-import com.springboot.coursevault.subject.CreateSubjectRequest;
-import com.springboot.coursevault.resource.ResourceDTO;
-import com.springboot.coursevault.user.User;
 import jakarta.validation.Valid;
 import com.springboot.coursevault.user.CurrentUserService;
-import com.springboot.coursevault.resource.ResourceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

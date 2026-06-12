@@ -6,15 +6,7 @@ import com.springboot.coursevault.resource.ResourceService;
 import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.subject.SubjectRepository;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.resource.ResourceService;
 
-import com.springboot.coursevault.portal.DashboardDTO;
-import com.springboot.coursevault.portal.TimelineDTO;
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.bookmark.BookmarkRepository;
-import com.springboot.coursevault.resource.ResourceRepository;
-import com.springboot.coursevault.subject.SubjectRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

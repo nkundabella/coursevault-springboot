@@ -3,15 +3,8 @@ package com.springboot.coursevault.subject;
 import com.springboot.coursevault.resource.ResourceDTO;
 import com.springboot.coursevault.user.User;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.resource.ResourceDTO;
 
-import com.springboot.coursevault.subject.CreateSubjectRequest;
-import com.springboot.coursevault.resource.ResourceDTO;
-import com.springboot.coursevault.subject.SubjectDTO;
-import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.user.CurrentUserService;
-import com.springboot.coursevault.subject.SubjectService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

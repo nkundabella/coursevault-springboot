@@ -1,6 +1,5 @@
 package com.springboot.coursevault.user;
 
-import com.springboot.coursevault.user.User;
 
 public class UserDTO {
     private Long id;

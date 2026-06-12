@@ -10,12 +10,6 @@ import com.springboot.coursevault.user.UserDTO;
 import com.springboot.coursevault.auth.LoginRequest;
 import com.springboot.coursevault.auth.VerificationCode;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.auth.SignupRequest;
-import com.springboot.coursevault.auth.AuthService;
-import com.springboot.coursevault.user.UserDTO;
-import com.springboot.coursevault.auth.VerificationCode;
-import com.springboot.coursevault.auth.LoginRequest;
 
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.coursevault.util.JwtUtil;

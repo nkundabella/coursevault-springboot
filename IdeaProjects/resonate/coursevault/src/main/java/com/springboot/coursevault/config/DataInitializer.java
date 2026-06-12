@@ -1,12 +1,8 @@
 package com.springboot.coursevault.config;
 
 import com.springboot.coursevault.user.UserRepository;
-import com.springboot.coursevault.user.User;
 
-import com.springboot.coursevault.user.User;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

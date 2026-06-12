@@ -1,6 +1,5 @@
 package com.springboot.coursevault.subject;
 
-import com.springboot.coursevault.subject.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

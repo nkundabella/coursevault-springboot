@@ -1,8 +1,6 @@
 package com.springboot.coursevault.user;
 
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.user.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

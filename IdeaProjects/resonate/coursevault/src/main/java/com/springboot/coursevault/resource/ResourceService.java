@@ -5,18 +5,9 @@ import com.springboot.coursevault.user.User;
 import com.springboot.coursevault.subject.CreateSubjectRequest;
 import com.springboot.coursevault.bookmark.BookmarkRepository;
 
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.bookmark.Bookmark;
-import com.springboot.coursevault.subject.CreateSubjectRequest;
 
-import com.springboot.coursevault.subject.CreateSubjectRequest;
-import com.springboot.coursevault.resource.ResourceDTO;
 import com.springboot.coursevault.util.InputSanitizer;
 import com.springboot.coursevault.exception.GlobalExceptionHandler;
-import com.springboot.coursevault.bookmark.Bookmark;
-import com.springboot.coursevault.user.User;
-import com.springboot.coursevault.bookmark.BookmarkRepository;
-import com.springboot.coursevault.resource.ResourceRepository;
 import com.springboot.coursevault.security.AuthorizationService;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
